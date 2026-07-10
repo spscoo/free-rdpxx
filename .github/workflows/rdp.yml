@@ -15,16 +15,18 @@ jobs:
         Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
         net user runneradmin Sidali2026!
-    - name: Debug Ngrok (Find the Error)
+    - name: Start Ngrok Tunnel and Get URL
       run: |
-        Start-Process .\ngrok_folder\ngrok.exe -ArgumentList "tcp 3389" -NoNewWindow -RedirectStandardOutput "ngrok.log" -RedirectStandardError "ngrok.err"
-        Start-Sleep -Seconds 5
-        echo "===================================================="
-        echo "🔥 واش راه يقول NGROK؟ 🔥"
-        Get-Content ngrok.err
-        Get-Content ngrok.log
-        echo "===================================================="
+        Start-Process .\ngrok_folder\ngrok.exe -ArgumentList "tcp 3389"
+        Start-Sleep -Seconds 10
         $response = Invoke-RestMethod -Uri "http://127.0.0.1:4040/api/tunnels"
         $url = $response.tunnels[0].public_url
-        echo "الرابط: $url"
+        $clean_url = $url -replace "tcp://", ""
+        echo "===================================================="
+        echo "🔥 السيرفر واجد يا بطل 🔥"
+        echo "انسخ هاد الرابط وحطه في تطبيق RD Client:"
+        echo "$clean_url"
+        echo "اليوزر: runneradmin"
+        echo "المودباس: Sidali2026!"
+        echo "===================================================="
         Start-Sleep -Seconds 21600
